@@ -1,4 +1,12 @@
-## ADDED Requirements
+## Purpose
+
+This specification defines a minimal backend plugin system for evolution-data-server.
+
+The system provides a safe, demonstrable extension layer for backend-related plugins without rewriting existing CardDAV, CalDAV, IMAP, POP, local backend, or Camel provider resolution paths.
+
+The plugin system covers metadata, lifecycle handling, dependency checks, GSettings-based enable/disable control, compatibility with existing backend behavior, and a demo module for verification.
+
+## Requirements
 
 ### Requirement: Backend plugin metadata
 
@@ -6,15 +14,15 @@ The system SHALL define a backend plugin metadata model containing at least plug
 
 #### Scenario: Valid plugin metadata is provided
 
-- GIVEN a plugin exposes all required metadata fields
-- WHEN the plugin manager inspects the plugin
-- THEN the plugin metadata is accepted
+- **GIVEN** a plugin exposes all required metadata fields
+- **WHEN** the plugin manager inspects the plugin
+- **THEN** the plugin metadata is accepted
 
 #### Scenario: Required metadata is missing
 
-- GIVEN a plugin does not expose required metadata fields
-- WHEN the plugin manager validates the plugin
-- THEN the plugin is rejected or skipped with a diagnostic message
+- **GIVEN** a plugin does not expose required metadata fields
+- **WHEN** the plugin manager validates the plugin
+- **THEN** the plugin is rejected or skipped with a diagnostic message
 
 ### Requirement: Plugin discovery and lifecycle
 
@@ -22,16 +30,16 @@ The system SHALL support discovery, initialization, and deinitialization of back
 
 #### Scenario: Enabled plugin is discovered
 
-- GIVEN a plugin exists in the configured plugin directory
-- AND the plugin is enabled
-- WHEN the relevant service starts
-- THEN the plugin manager discovers and initializes the plugin
+- **GIVEN** a plugin exists in the configured plugin directory
+- **AND** the plugin is enabled
+- **WHEN** the relevant service starts
+- **THEN** the plugin manager discovers and initializes the plugin
 
 #### Scenario: Service shuts down
 
-- GIVEN a plugin was initialized
-- WHEN the service shuts down
-- THEN the plugin manager deinitializes the plugin safely
+- **GIVEN** a plugin was initialized
+- **WHEN** the service shuts down
+- **THEN** the plugin manager deinitializes the plugin safely
 
 ### Requirement: Dependency handling
 
@@ -39,17 +47,17 @@ The system SHALL handle dependencies between plugins.
 
 #### Scenario: Dependency is available
 
-- GIVEN plugin B depends on plugin A
-- AND plugin A is available and enabled
-- WHEN plugins are initialized
-- THEN plugin A is initialized before plugin B
+- **GIVEN** plugin B depends on plugin A
+- **AND** plugin A is available and enabled
+- **WHEN** plugins are initialized
+- **THEN** plugin A is initialized before plugin B
 
 #### Scenario: Dependency is missing
 
-- GIVEN plugin B depends on plugin A
-- AND plugin A is missing or disabled
-- WHEN plugins are initialized
-- THEN plugin B is skipped without breaking unrelated plugins
+- **GIVEN** plugin B depends on plugin A
+- **AND** plugin A is missing or disabled
+- **WHEN** plugins are initialized
+- **THEN** plugin B is skipped without breaking unrelated plugins
 
 ### Requirement: GSettings enable and disable control
 
@@ -57,15 +65,15 @@ The system SHALL provide additive GSettings-based configuration for enabling and
 
 #### Scenario: Plugin is disabled
 
-- GIVEN a plugin is listed as disabled in settings
-- WHEN plugin discovery runs
-- THEN the plugin is skipped
+- **GIVEN** a plugin is listed as disabled in settings
+- **WHEN** plugin discovery runs
+- **THEN** the plugin is skipped
 
 #### Scenario: No explicit disable setting exists
 
-- GIVEN no setting disables a plugin
-- WHEN plugin discovery runs
-- THEN existing behavior remains compatible and permissive
+- **GIVEN** no setting disables a plugin
+- **WHEN** plugin discovery runs
+- **THEN** existing behavior remains compatible and permissive
 
 ### Requirement: Existing backend compatibility
 
@@ -73,6 +81,6 @@ The system SHALL not break existing backend loading behavior for current address
 
 #### Scenario: Existing backends remain available
 
-- GIVEN existing CardDAV, CalDAV, IMAP, POP, and local backends
-- WHEN the plugin manager feature is present
-- THEN existing backend/provider resolution paths continue to work unchanged
+- **GIVEN** existing CardDAV, CalDAV, IMAP, POP, and local backends
+- **WHEN** the plugin manager feature is present
+- **THEN** existing backend/provider resolution paths continue to work unchanged
