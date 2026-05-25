@@ -51,13 +51,14 @@ E_BACKEND_PLUGIN_MANAGER_ERROR_DEPENDENCY_CYCLE
 
 #define E_BACKEND_PLUGIN_MANAGER_ERROR (e_backend_plugin_manager_error_quark ())
 
-GQuarke_backend_plugin_manager_error_quark(void);
+GQuark e_backend_plugin_manager_error_quark (void);
 
 const gchar *e_backend_plugin_kind_to_string(EBackendPluginKind kind);
 
-gbooleane_backend_plugin_metadata_is_valid(const EBackendPluginMetadata *metadata,
+gboolean e_backend_plugin_metadata_is_valid(const EBackendPluginMetadata *metadata,
  GError                     **error);
 
 G_END_DECLS
 
 #endif /* E_BACKEND_PLUGIN_MANAGER_H */
+
