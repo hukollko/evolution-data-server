@@ -87,5 +87,15 @@
       <summary>Whether to limit operations in Power Saver mode</summary>
       <description>When set to “true”, possibly expensive operations required to refresh books/calendars/mail accounts/... are skipped when the machine is in the Power Saver mode.</description>
     </key>
+    <key name="enabled-backend-plugins" type="as">
+      <default>[]</default>
+      <summary>Explicitly enabled backend plugins</summary>
+      <description>Optional list of backend plugin names that are allowed to load. When empty, all plugins remain enabled by default, except those explicitly listed in disabled-backend-plugins.</description>
+    </key>
+    <key name="disabled-backend-plugins" type="as">
+      <default>[]</default>
+      <summary>Explicitly disabled backend plugins</summary>
+      <description>List of backend plugin names that must be skipped. This is additive and does not alter existing backend behavior unless plugin names are explicitly listed here.</description>
+    </key>
   </schema>
 </schemalist>

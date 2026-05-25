@@ -14,9 +14,9 @@
 
 ## 3. Configuration
 
-- [ ] Add additive GSettings keys for enabled/disabled plugin names.
-- [ ] Make defaults compatible with existing behavior.
-- [ ] Ensure disabled plugins are skipped without affecting existing modules.
+- [x] Add additive GSettings keys for enabled/disabled plugin names.
+- [x] Make defaults compatible with existing behavior.
+- [x] Ensure disabled plugins are skipped without affecting existing modules.
 
 ## 4. Demo integration
 

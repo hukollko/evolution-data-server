@@ -1,5 +1,11 @@
 #include "e-backend-plugin-manager.h"
 
+#include <gio/gio.h>
+
+#define EDS_SETTINGS_SCHEMA_ID "org.gnome.evolution-data-server"
+#define EDS_SETTINGS_KEY_ENABLED_BACKEND_PLUGINS "enabled-backend-plugins"
+#define EDS_SETTINGS_KEY_DISABLED_BACKEND_PLUGINS "disabled-backend-plugins"
+
 typedef struct _EBackendPluginEntry {
 	EBackendPluginMetadata metadata;
 	gchar **dependencies;
@@ -13,7 +19,62 @@ typedef struct _EBackendPluginEntry {
 struct _EBackendPluginManager {
 	GPtrArray *entries;
 	GPtrArray *initialized_entries;
+	GSettings *settings;
+	gchar **enabled_plugins;
+	gchar **disabled_plugins;
 };
+
+static gboolean
+backend_plugin_strv_contains (const gchar * const *strv,
+			      const gchar *value)
+{
+	guint ii;
+
+	if (!strv || !value)
+		return FALSE;
+
+	for (ii = 0; strv[ii]; ii++) {
+		if (g_strcmp0 (strv[ii], value) == 0)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+backend_plugin_manager_reload_settings (EBackendPluginManager *manager)
+{
+	g_return_if_fail (manager != NULL);
+
+	g_clear_pointer (&manager->enabled_plugins, g_strfreev);
+	g_clear_pointer (&manager->disabled_plugins, g_strfreev);
+
+	if (!manager->settings)
+		return;
+
+	manager->enabled_plugins = g_settings_get_strv (
+		manager->settings,
+		EDS_SETTINGS_KEY_ENABLED_BACKEND_PLUGINS);
+	manager->disabled_plugins = g_settings_get_strv (
+		manager->settings,
+		EDS_SETTINGS_KEY_DISABLED_BACKEND_PLUGINS);
+}
+
+static gboolean
+backend_plugin_manager_is_plugin_enabled (EBackendPluginManager *manager,
+					  const gchar *plugin_name)
+{
+	g_return_val_if_fail (manager != NULL, FALSE);
+	g_return_val_if_fail (plugin_name != NULL, FALSE);
+
+	if (backend_plugin_strv_contains ((const gchar * const *) manager->disabled_plugins, plugin_name))
+		return FALSE;
+
+	if (manager->enabled_plugins && manager->enabled_plugins[0])
+		return backend_plugin_strv_contains ((const gchar * const *) manager->enabled_plugins, plugin_name);
+
+	return TRUE;
+}
 
 static gchar **
 backend_plugin_dependencies_dup (const gchar * const *dependencies)
@@ -150,6 +211,8 @@ e_backend_plugin_manager_new (void)
 	manager = g_new0 (EBackendPluginManager, 1);
 	manager->entries = g_ptr_array_new_with_free_func (backend_plugin_entry_free);
 	manager->initialized_entries = g_ptr_array_new ();
+	manager->settings = g_settings_new (EDS_SETTINGS_SCHEMA_ID);
+	backend_plugin_manager_reload_settings (manager);
 
 	return manager;
 }
@@ -162,6 +225,9 @@ e_backend_plugin_manager_free (EBackendPluginManager *manager)
 
 	e_backend_plugin_manager_shutdown (manager);
 
+	g_clear_object (&manager->settings);
+	g_clear_pointer (&manager->enabled_plugins, g_strfreev);
+	g_clear_pointer (&manager->disabled_plugins, g_strfreev);
 	g_ptr_array_unref (manager->initialized_entries);
 	g_ptr_array_unref (manager->entries);
 	g_free (manager);
@@ -218,6 +284,9 @@ backend_plugin_manager_initialize_entry (EBackendPluginManager *manager,
 	if (entry->initialized)
 		return TRUE;
 
+	if (!backend_plugin_manager_is_plugin_enabled (manager, entry->metadata.name))
+		return TRUE;
+
 	if (entry->visiting) {
 		g_set_error (
 			error,
@@ -235,13 +304,14 @@ backend_plugin_manager_initialize_entry (EBackendPluginManager *manager,
 
 		dependency = backend_plugin_manager_find_entry (manager, entry->dependencies[ii]);
 
-		if (!dependency) {
+		if (!dependency ||
+		    !backend_plugin_manager_is_plugin_enabled (manager, dependency->metadata.name)) {
 			entry->visiting = FALSE;
 			g_set_error (
 				error,
 				E_BACKEND_PLUGIN_MANAGER_ERROR,
 				E_BACKEND_PLUGIN_MANAGER_ERROR_MISSING_DEPENDENCY,
-				"Plugin '%s' depends on missing plugin '%s'",
+				"Plugin '%s' depends on missing or disabled plugin '%s'",
 				entry->metadata.name,
 				entry->dependencies[ii]);
 			return FALSE;
@@ -272,6 +342,8 @@ e_backend_plugin_manager_initialize (EBackendPluginManager *manager,
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (manager != NULL, FALSE);
+
+	backend_plugin_manager_reload_settings (manager);
 
 	for (ii = 0; ii < manager->entries->len; ii++) {
 		EBackendPluginEntry *entry = g_ptr_array_index (manager->entries, ii);
