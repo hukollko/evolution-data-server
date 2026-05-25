@@ -1,4 +1,4 @@
-﻿## 1. Research and preparation
+## 1. Research and preparation
 
 - [x] Read the lab task in `docs/lab5/backend-plugin-system-task.md`.
 - [x] Inspect existing module and backend loading mechanisms.
@@ -43,8 +43,7 @@
 
 ## 7. Final checks
 
-- [ ] Verify `git status`.
+- [x] Verify `git status`.
 - [x] Inspect staged diff before commit.
 - [x] Confirm existing backend paths are not rewritten.
 - [x] Confirm the change remains minimal and demonstrable for the lab.
-
