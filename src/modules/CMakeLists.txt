@@ -63,6 +63,7 @@ macro(add_credentials_module _name _sourcesvar _depsvar _defsvar _cflagsvar _inc
 endmacro(add_credentials_module)
 
 add_subdirectory(cache-reaper)
+add_subdirectory(backend-plugin-demo)
 add_subdirectory(google-backend)
 add_subdirectory(outlook-backend)
 add_subdirectory(webdav-backend)

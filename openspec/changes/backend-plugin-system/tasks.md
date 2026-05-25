@@ -20,30 +20,31 @@
 
 ## 4. Demo integration
 
-- [ ] Add a mock/demo plugin module.
-- [ ] Integrate the demo with an existing safe module-loading path.
-- [ ] Avoid changing CardDAV, CalDAV, IMAP, POP, and local backend resolution paths.
+- [x] Add a mock/demo plugin module.
+- [x] Integrate the demo with an existing safe module-loading path.
+- [x] Avoid changing CardDAV, CalDAV, IMAP, POP, and local backend resolution paths.
 
 ## 5. Tests and verification
 
-- [ ] Add focused tests for metadata validation.
-- [ ] Add tests for dependency ordering.
-- [ ] Add tests for unresolved dependency skip behavior.
-- [ ] Add tests or a verification scenario for enabled/disabled plugin behavior.
-- [ ] Run the narrowest relevant test commands.
-- [ ] Document any tests that cannot be run locally on Windows.
+- [x] Add focused tests for metadata validation.
+- [x] Add tests for dependency ordering.
+- [x] Add tests for unresolved dependency skip behavior.
+- [x] Add tests or a verification scenario for enabled/disabled plugin behavior.
+- [x] Run the narrowest relevant test commands.
+- [x] Document any tests that cannot be run locally on Windows.
 
 ## 6. Documentation
 
-- [ ] Document the plugin API.
-- [ ] Document metadata fields.
-- [ ] Document lifecycle functions.
-- [ ] Document how to build and install a demo plugin.
-- [ ] Document limitations and future work.
+- [x] Document the plugin API.
+- [x] Document metadata fields.
+- [x] Document lifecycle functions.
+- [x] Document how to build and install a demo plugin.
+- [x] Document limitations and future work.
 
 ## 7. Final checks
 
 - [ ] Verify `git status`.
-- [ ] Inspect staged diff before commit.
-- [ ] Confirm existing backend paths are not rewritten.
-- [ ] Confirm the change remains minimal and demonstrable for the lab.
+- [x] Inspect staged diff before commit.
+- [x] Confirm existing backend paths are not rewritten.
+- [x] Confirm the change remains minimal and demonstrable for the lab.
+
