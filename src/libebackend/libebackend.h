@@ -12,6 +12,7 @@
 #include <libebackend/e-backend-enums.h>
 #include <libebackend/e-backend-enumtypes.h>
 #include <libebackend/e-backend-factory.h>
+#include <libebackend/e-backend-plugin-manager.h>
 #include <libebackend/e-backend.h>
 #include <libebackend/e-cache.h>
 #include <libebackend/e-cache-keys.h>
@@ -37,4 +38,3 @@
 #undef __LIBEBACKEND_H_INSIDE__
 
 #endif /* LIBEBACKEND_H */
-

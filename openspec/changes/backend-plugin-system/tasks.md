@@ -6,11 +6,11 @@
 
 ## 2. Core API
 
-- [ ] Add plugin metadata definitions in `src/libebackend`.
-- [ ] Add plugin manager API in `src/libebackend`.
-- [ ] Add validation for required metadata fields.
-- [ ] Add dependency ordering and unresolved dependency handling.
-- [ ] Add lifecycle calls for initialization and shutdown.
+- [x] Add plugin metadata definitions in `src/libebackend`.
+- [x] Add plugin manager API in `src/libebackend`.
+- [x] Add validation for required metadata fields.
+- [x] Add dependency ordering and unresolved dependency handling.
+- [x] Add lifecycle calls for initialization and shutdown.
 
 ## 3. Configuration
 

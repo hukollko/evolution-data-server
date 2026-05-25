@@ -1,64 +1,64 @@
-﻿#ifndef E_BACKEND_PLUGIN_MANAGER_H
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
+#ifndef E_BACKEND_PLUGIN_MANAGER_H
 #define E_BACKEND_PLUGIN_MANAGER_H
 
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-/**
- * EBackendPluginKind:
- * @E_BACKEND_PLUGIN_KIND_UNKNOWN: Unknown or invalid plugin kind.
- * @E_BACKEND_PLUGIN_KIND_ADDRESS_BOOK: Address book backend plugin.
- * @E_BACKEND_PLUGIN_KIND_CALENDAR: Calendar backend plugin.
- * @E_BACKEND_PLUGIN_KIND_MAIL: Mail backend plugin.
- * @E_BACKEND_PLUGIN_KIND_SOURCE_REGISTRY: Source registry/service plugin.
- * @E_BACKEND_PLUGIN_KIND_OTHER: Other backend-related plugin.
- *
- * Describes the data/backend area supported by a backend plugin.
- */
 typedef enum {
-E_BACKEND_PLUGIN_KIND_UNKNOWN = 0,
-E_BACKEND_PLUGIN_KIND_ADDRESS_BOOK,
-E_BACKEND_PLUGIN_KIND_CALENDAR,
-E_BACKEND_PLUGIN_KIND_MAIL,
-E_BACKEND_PLUGIN_KIND_SOURCE_REGISTRY,
-E_BACKEND_PLUGIN_KIND_OTHER
+	E_BACKEND_PLUGIN_KIND_UNKNOWN = 0,
+	E_BACKEND_PLUGIN_KIND_ADDRESS_BOOK,
+	E_BACKEND_PLUGIN_KIND_CALENDAR,
+	E_BACKEND_PLUGIN_KIND_MAIL,
+	E_BACKEND_PLUGIN_KIND_SOURCE_REGISTRY,
+	E_BACKEND_PLUGIN_KIND_OTHER
 } EBackendPluginKind;
 
-/**
- * EBackendPluginMetadata:
- * @name: Stable plugin name.
- * @version: Plugin version string.
- * @kind: Backend/data type supported by the plugin.
- * @description: Human-readable plugin description.
- * @dependencies: NULL-terminated list of plugin names this plugin depends on.
- *
- * Static metadata exposed by a backend plugin.
- */
 typedef struct _EBackendPluginMetadata {
-const gchar *name;
-const gchar *version;
-EBackendPluginKind kind;
-const gchar *description;
-const gchar * const *dependencies;
+	const gchar *name;
+	const gchar *version;
+	EBackendPluginKind kind;
+	const gchar *description;
+	const gchar * const *dependencies;
 } EBackendPluginMetadata;
 
 typedef enum {
-E_BACKEND_PLUGIN_MANAGER_ERROR_INVALID_METADATA,
-E_BACKEND_PLUGIN_MANAGER_ERROR_MISSING_DEPENDENCY,
-E_BACKEND_PLUGIN_MANAGER_ERROR_DEPENDENCY_CYCLE
+	E_BACKEND_PLUGIN_MANAGER_ERROR_INVALID_METADATA,
+	E_BACKEND_PLUGIN_MANAGER_ERROR_MISSING_DEPENDENCY,
+	E_BACKEND_PLUGIN_MANAGER_ERROR_DEPENDENCY_CYCLE
 } EBackendPluginManagerError;
 
-#define E_BACKEND_PLUGIN_MANAGER_ERROR (e_backend_plugin_manager_error_quark ())
+typedef struct _EBackendPluginManager EBackendPluginManager;
 
-GQuark e_backend_plugin_manager_error_quark (void);
+typedef gboolean (*EBackendPluginInitFunc)	(gpointer user_data,
+					 GError **error);
+typedef void (*EBackendPluginShutdownFunc)	(gpointer user_data);
 
-const gchar *e_backend_plugin_kind_to_string(EBackendPluginKind kind);
+#define E_BACKEND_PLUGIN_MANAGER_ERROR \
+	(e_backend_plugin_manager_error_quark ())
 
-gboolean e_backend_plugin_metadata_is_valid(const EBackendPluginMetadata *metadata,
- GError                     **error);
+GQuark		e_backend_plugin_manager_error_quark
+					(void) G_GNUC_CONST;
+const gchar *	e_backend_plugin_kind_to_string	(EBackendPluginKind kind);
+gboolean	e_backend_plugin_metadata_is_valid	(const EBackendPluginMetadata *metadata,
+					 GError **error);
+EBackendPluginManager *
+		e_backend_plugin_manager_new		(void);
+void		e_backend_plugin_manager_free		(EBackendPluginManager *manager);
+gboolean	e_backend_plugin_manager_add		(EBackendPluginManager *manager,
+					 const EBackendPluginMetadata *metadata,
+					 EBackendPluginInitFunc init_func,
+					 EBackendPluginShutdownFunc shutdown_func,
+					 gpointer user_data,
+					 GError **error);
+gboolean	e_backend_plugin_manager_initialize	(EBackendPluginManager *manager,
+					 GError **error);
+void		e_backend_plugin_manager_shutdown	(EBackendPluginManager *manager);
 
 G_END_DECLS
 
 #endif /* E_BACKEND_PLUGIN_MANAGER_H */
-

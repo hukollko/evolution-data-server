@@ -10,6 +10,7 @@ set(DEPENDENCIES
 set(SOURCES
 	e-backend.c
 	e-backend-factory.c
+	e-backend-plugin-manager.c
 	e-cache.c
 	e-cache-keys.c
 	e-cache-reaper.c
@@ -40,6 +41,7 @@ set(HEADERS
 	e-backend-autocleanups.h
 	e-backend-enums.h
 	e-backend-factory.h
+	e-backend-plugin-manager.h
 	e-cache.h
 	e-cache-keys.h
 	e-cache-reaper.h
@@ -61,7 +63,6 @@ set(HEADERS
 	e-webdav-collection-backend.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-backend-enumtypes.h
 )
-
 if(HAVE_LIBDB)
 	list(APPEND SOURCES
 		e-dbhash.c
